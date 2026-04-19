@@ -1,0 +1,9 @@
+# Normalize line endings for text files in the repository.
+* text=auto
+
+# Keep shell scripts with LF on all platforms.
+*.sh text eol=lf
+
+# Keep Windows command scripts with CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
