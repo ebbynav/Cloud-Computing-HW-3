@@ -103,6 +103,136 @@ function createSeedPhotoDataset() {
       objectKey: "nyc-park.jpg",
       imageUrl: "assets/nyc-park.jpg",
       labels: ["park", "nyc", "city", "people", "lawn"]
+    },
+    {
+      objectKey: "beach-1.jpg",
+      imageUrl: "assets/beach-1.jpg",
+      labels: ["beach", "shore", "ocean", "sky", "outdoor"]
+    },
+    {
+      objectKey: "beach-2.jpg",
+      imageUrl: "assets/beach-2.jpg",
+      labels: ["beach", "sand", "water", "sky", "outdoor"]
+    },
+    {
+      objectKey: "sunset-1.jpg",
+      imageUrl: "assets/sunset-1.jpg",
+      labels: ["sunset", "sky", "sun", "landscape", "outdoor"]
+    },
+    {
+      objectKey: "sunset-2.jpg",
+      imageUrl: "assets/sunset-2.jpg",
+      labels: ["sunset", "evening", "sky", "horizon", "outdoor"]
+    },
+    {
+      objectKey: "mountain-1.jpg",
+      imageUrl: "assets/mountain-1.jpg",
+      labels: ["mountain", "peak", "nature", "landscape", "outdoor"]
+    },
+    {
+      objectKey: "mountain-2.jpg",
+      imageUrl: "assets/mountain-2.jpg",
+      labels: ["mountain", "hill", "sky", "nature", "outdoor"]
+    },
+    {
+      objectKey: "lake-1.jpg",
+      imageUrl: "assets/lake-1.jpg",
+      labels: ["lake", "water", "reflection", "nature", "outdoor"]
+    },
+    {
+      objectKey: "lake-2.jpg",
+      imageUrl: "assets/lake-2.jpg",
+      labels: ["lake", "shore", "water", "trees", "outdoor"]
+    },
+    {
+      objectKey: "city-street-1.jpg",
+      imageUrl: "assets/city-street-1.jpg",
+      labels: ["city", "street", "road", "buildings", "urban"]
+    },
+    {
+      objectKey: "city-street-2.jpg",
+      imageUrl: "assets/city-street-2.jpg",
+      labels: ["city", "street", "road", "traffic", "urban"]
+    },
+    {
+      objectKey: "laptop-desk-1.jpg",
+      imageUrl: "assets/laptop-desk-1.jpg",
+      labels: ["laptop", "desk", "workspace", "computer", "office"]
+    },
+    {
+      objectKey: "laptop-desk-2.jpg",
+      imageUrl: "assets/laptop-desk-2.jpg",
+      labels: ["laptop", "desk", "keyboard", "workspace", "office"]
+    },
+    {
+      objectKey: "phone-1.jpg",
+      imageUrl: "assets/phone-1.jpg",
+      labels: ["phone", "smartphone", "screen", "device", "table"]
+    },
+    {
+      objectKey: "phone-2.jpg",
+      imageUrl: "assets/phone-2.jpg",
+      labels: ["phone", "mobile", "smartphone", "device", "desk"]
+    },
+    {
+      objectKey: "bottle-1.jpg",
+      imageUrl: "assets/bottle-1.jpg",
+      labels: ["bottle", "drink", "table", "container", "object"]
+    },
+    {
+      objectKey: "bottle-2.jpg",
+      imageUrl: "assets/bottle-2.jpg",
+      labels: ["bottle", "glass", "drink", "container", "object"]
+    },
+    {
+      objectKey: "car-1.jpg",
+      imageUrl: "assets/car-1.jpg",
+      labels: ["car", "vehicle", "road", "transport", "street"]
+    },
+    {
+      objectKey: "car-2.jpg",
+      imageUrl: "assets/car-2.jpg",
+      labels: ["car", "vehicle", "traffic", "road", "transport"]
+    },
+    {
+      objectKey: "bicycle-1.jpg",
+      imageUrl: "assets/bicycle-1.jpg",
+      labels: ["bicycle", "bike", "cycle", "street", "outdoor"]
+    },
+    {
+      objectKey: "bicycle-2.jpg",
+      imageUrl: "assets/bicycle-2.jpg",
+      labels: ["bicycle", "bike", "cycle", "road", "outdoor"]
+    },
+    {
+      objectKey: "pizza-1.jpg",
+      imageUrl: "assets/pizza-1.jpg",
+      labels: ["pizza", "food", "meal", "cheese", "dining"]
+    },
+    {
+      objectKey: "pizza-2.jpg",
+      imageUrl: "assets/pizza-2.jpg",
+      labels: ["pizza", "food", "slice", "meal", "dining"]
+    },
+    {
+      objectKey: "coffee-1.jpg",
+      imageUrl: "assets/coffee-1.jpg",
+      labels: ["coffee", "cup", "drink", "table", "beverage"]
+    },
+    {
+      objectKey: "coffee-2.jpg",
+      imageUrl: "assets/coffee-2.jpg",
+      labels: ["coffee", "mug", "drink", "cafe", "beverage"]
+    },
+    {
+      objectKey: "burger-1.jpg",
+      imageUrl: "assets/burger-1.jpg",
+      labels: ["burger", "food", "meal", "sandwich", "dining"]
+    },
+    {
+      objectKey: "burger-2.jpg",
+      imageUrl: "assets/burger-2.jpg",
+      labels: ["burger", "food", "meal", "fries", "dining"]
     }
   ];
 }
