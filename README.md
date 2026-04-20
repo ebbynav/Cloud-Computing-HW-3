@@ -13,11 +13,11 @@ Frontend for AI Photo Search with:
 - `assets/vehicles.jpg`
 - `assets/menu.jpg`
 - `assets/people.jpg`
-- `assets/trees.webp`
-- `assets/cats.avif`
+- `assets/trees.jpg`
+- `assets/cats.jpg`
 - `assets/dogs.jpg`
-- `assets/dog-park.png`
-- `assets/nyc-park.webp`
+- `assets/dog-park.jpg`
+- `assets/nyc-park.jpg`
 
 ## Configure API Integration
 

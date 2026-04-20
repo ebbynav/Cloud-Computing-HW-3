@@ -80,13 +80,13 @@ function createSeedPhotoDataset() {
       labels: ["people", "friends", "group", "smile", "outdoor"]
     },
     {
-      objectKey: "trees.webp",
-      imageUrl: "assets/trees.webp",
+      objectKey: "trees.jpg",
+      imageUrl: "assets/trees.jpg",
       labels: ["trees", "forest", "nature", "park", "outdoor"]
     },
     {
-      objectKey: "cats.avif",
-      imageUrl: "assets/cats.avif",
+      objectKey: "cats.jpg",
+      imageUrl: "assets/cats.jpg",
       labels: ["cat", "cats", "kitten", "pets", "animals"]
     },
     {
@@ -95,13 +95,13 @@ function createSeedPhotoDataset() {
       labels: ["dog", "dogs", "pet", "animals", "breeds"]
     },
     {
-      objectKey: "dog-park.png",
-      imageUrl: "assets/dog-park.png",
+      objectKey: "dog-park.jpg",
+      imageUrl: "assets/dog-park.jpg",
       labels: ["dog", "dogs", "park", "grass", "outdoor"]
     },
     {
-      objectKey: "nyc-park.webp",
-      imageUrl: "assets/nyc-park.webp",
+      objectKey: "nyc-park.jpg",
+      imageUrl: "assets/nyc-park.jpg",
       labels: ["park", "nyc", "city", "people", "lawn"]
     }
   ];
