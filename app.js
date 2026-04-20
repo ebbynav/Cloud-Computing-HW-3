@@ -1,10 +1,15 @@
 /*
-  AI Photo Search
-  Phase 1 static frontend only.
-
-  This file intentionally avoids real API calls so it can be uploaded
-  directly to an S3 static website bucket for the initial prototype.
+  AI Photo Search frontend
+  Assignment-aligned behavior with API integration and static fallback.
 */
+
+const APP_CONFIG = {
+  apiBaseUrl: "", // Example: "https://abc123.execute-api.us-east-1.amazonaws.com/prod"
+  apiKey: "",
+  searchPath: "/search",
+  uploadPath: "/photos", // Set to "/upload" if your deployed API uses that route.
+  s3PhotosBaseUrl: "" // Example: "https://your-photo-bucket.s3.amazonaws.com"
+};
 
 const IGNORED_SEARCH_WORDS = new Set([
   "show",
@@ -21,8 +26,14 @@ const IGNORED_SEARCH_WORDS = new Set([
   "at",
   "in",
   "of",
-  "my"
+  "my",
+  "please",
+  "find",
+  "for",
+  "them"
 ]);
+
+const API_MODE_ENABLED = Boolean(APP_CONFIG.apiBaseUrl.trim());
 
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-input");
@@ -34,8 +45,7 @@ const statusMessage = document.getElementById("status-message");
 const resultsSummary = document.getElementById("results-summary");
 const resultsGallery = document.getElementById("results-gallery");
 
-// This array acts as a temporary in-browser photo dataset for the demo.
-let photoDataset = createMockPhotoDataset();
+let photoDataset = createSeedPhotoDataset();
 let selectedPreviewUrl = "";
 const uploadedPreviewUrls = [];
 
@@ -45,71 +55,95 @@ photoInput.addEventListener("change", handleFileSelection);
 window.addEventListener("beforeunload", cleanupObjectUrls);
 
 renderGallery(photoDataset);
+setStatus(
+  API_MODE_ENABLED
+    ? "API mode enabled. Search and uploads use your API Gateway endpoints."
+    : "Static mode enabled. Configure APP_CONFIG.apiBaseUrl in app.js to call your API.",
+  "info"
+);
 
-function createMockPhotoDataset() {
+function createSeedPhotoDataset() {
   return [
-    createPhotoEntry("dog-park.jpg", ["dog", "park", "grass"], "#cce3a8", "#5f7d2b"),
-    createPhotoEntry("cat-sofa.jpg", ["cat", "sofa", "indoor"], "#f6d8b8", "#8a5335"),
-    createPhotoEntry("beach-friends.jpg", ["person", "beach", "sunset", "sam", "sally"], "#f7c78a", "#ad5b35"),
-    createPhotoEntry("laptop-desk.jpg", ["laptop", "desk", "workspace"], "#cfd9e8", "#395677"),
-    createPhotoEntry("car-road.jpg", ["car", "road", "outdoor"], "#c7d7dd", "#35535f"),
-    createPhotoEntry("city-night.jpg", ["city", "night", "lights"], "#c9c3f4", "#433b88")
+    {
+      objectKey: "vehicles.jpg",
+      imageUrl: "assets/vehicles.jpg",
+      labels: ["vehicle", "car", "truck", "bus", "motorcycle"]
+    },
+    {
+      objectKey: "menu.jpg",
+      imageUrl: "assets/menu.jpg",
+      labels: ["food", "meal", "restaurant", "menu", "dining"]
+    },
+    {
+      objectKey: "people.jpg",
+      imageUrl: "assets/people.jpg",
+      labels: ["people", "friends", "group", "smile", "outdoor"]
+    },
+    {
+      objectKey: "trees.webp",
+      imageUrl: "assets/trees.webp",
+      labels: ["trees", "forest", "nature", "park", "outdoor"]
+    },
+    {
+      objectKey: "cats.avif",
+      imageUrl: "assets/cats.avif",
+      labels: ["cat", "cats", "kitten", "pets", "animals"]
+    },
+    {
+      objectKey: "dogs.jpg",
+      imageUrl: "assets/dogs.jpg",
+      labels: ["dog", "dogs", "pet", "animals", "breeds"]
+    },
+    {
+      objectKey: "dog-park.png",
+      imageUrl: "assets/dog-park.png",
+      labels: ["dog", "dogs", "park", "grass", "outdoor"]
+    },
+    {
+      objectKey: "nyc-park.webp",
+      imageUrl: "assets/nyc-park.webp",
+      labels: ["park", "nyc", "city", "people", "lawn"]
+    }
   ];
 }
 
-function createPhotoEntry(filename, labels, startColor, endColor) {
-  return {
-    objectKey: filename,
-    imageUrl: buildPlaceholderImage(filename, labels, startColor, endColor),
-    labels: [...labels]
-  };
-}
-
-function buildPlaceholderImage(filename, labels, startColor, endColor) {
-  const accentLabel = labels.slice(0, 2).join(" / ");
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="${escapeHtml(filename)}">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="${startColor}" />
-          <stop offset="100%" stop-color="${endColor}" />
-        </linearGradient>
-      </defs>
-      <rect width="640" height="480" fill="url(#bg)" />
-      <circle cx="520" cy="105" r="62" fill="rgba(255,255,255,0.22)" />
-      <rect x="64" y="300" width="512" height="98" rx="24" fill="rgba(255,255,255,0.18)" />
-      <text x="64" y="138" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="700" fill="#ffffff">${escapeHtml(filename)}</text>
-      <text x="64" y="202" font-family="Segoe UI, Arial, sans-serif" font-size="28" fill="#ffffff">${escapeHtml(accentLabel)}</text>
-      <text x="64" y="356" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#ffffff">Mock photo preview for the static frontend demo</text>
-    </svg>
-  `;
-
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-}
-
-function handleSearchSubmit(event) {
+async function handleSearchSubmit(event) {
   event.preventDefault();
 
   const rawQuery = searchInput.value.trim();
   if (!rawQuery) {
     setStatus("Enter a search phrase before running a search.", "error");
-    renderEmptyState("No matches yet. Try a search like \"show me dogs\" or \"show me Sam at the beach\".");
+    renderEmptyState("No matches yet. Try a search like \"show me dogs\" or \"show me trees and park\".");
     resultsSummary.textContent = "Search query is required.";
     return;
   }
 
-  const matches = searchMockPhotos(rawQuery, photoDataset);
-  renderGallery(matches);
+  try {
+    if (API_MODE_ENABLED) {
+      const apiResults = await searchPhotosViaApi(rawQuery);
+      renderGallery(apiResults);
+      resultsSummary.textContent = `Showing ${apiResults.length} API result${apiResults.length === 1 ? "" : "s"} for \"${rawQuery}\".`;
+      setStatus(`Search completed via GET ${APP_CONFIG.searchPath}.`, "success");
+      return;
+    }
 
-  if (matches.length === 0) {
-    setStatus(`No photos matched "${rawQuery}".`, "info");
-    return;
+    const matches = searchMockPhotos(rawQuery, photoDataset);
+    renderGallery(matches);
+
+    if (matches.length === 0) {
+      setStatus(`No photos matched \"${rawQuery}\" in static mode.`, "info");
+      return;
+    }
+
+    setStatus(`Found ${matches.length} matching photo${matches.length === 1 ? "" : "s"} in static mode.`, "success");
+  } catch (error) {
+    setStatus(`Search failed: ${error.message}`, "error");
+    renderEmptyState("Search request failed. Confirm your API URL, API key, and deployed routes.");
+    resultsSummary.textContent = "Search failed.";
   }
-
-  setStatus(`Found ${matches.length} matching photo${matches.length === 1 ? "" : "s"} for "${rawQuery}".`, "success");
 }
 
-function handleUploadSubmit(event) {
+async function handleUploadSubmit(event) {
   event.preventDefault();
 
   const selectedFile = photoInput.files[0];
@@ -123,24 +157,39 @@ function handleUploadSubmit(event) {
     return;
   }
 
-  const customLabels = parseCustomLabels(labelsInput.value);
+  const rawCustomLabels = parseCustomLabels(labelsInput.value, false);
+  const normalizedLabels = parseCustomLabels(labelsInput.value, true);
   const previewUrl = getActivePreviewUrl();
 
-  const newEntry = {
-    objectKey: selectedFile.name,
-    imageUrl: previewUrl,
-    labels: customLabels.length ? customLabels : ["user-upload"]
-  };
+  try {
+    if (API_MODE_ENABLED) {
+      await uploadPhotoViaApi(selectedFile, rawCustomLabels);
+      setStatus(
+        rawCustomLabels.length
+          ? `Upload completed via PUT ${APP_CONFIG.uploadPath} with x-amz-meta-customLabels: ${rawCustomLabels.join(", ")}`
+          : `Upload completed via PUT ${APP_CONFIG.uploadPath} without custom labels.`,
+        "success"
+      );
+    } else {
+      setStatus("Static mode: photo staged locally. Configure API settings to upload to S3 via API Gateway.", "info");
+    }
 
-  photoDataset = [newEntry, ...photoDataset];
-  uploadedPreviewUrls.push(previewUrl);
-  renderGallery(photoDataset);
-  resultsSummary.textContent = `Showing ${photoDataset.length} photo${photoDataset.length === 1 ? "" : "s"} including your temporary upload.`;
+    const newEntry = {
+      objectKey: selectedFile.name,
+      imageUrl: previewUrl,
+      labels: normalizedLabels.length ? normalizedLabels : ["user-upload"]
+    };
 
-  setStatus("Photo is ready for upload to S3 in the AWS integration phase.", "success");
+    photoDataset = [newEntry, ...photoDataset];
+    uploadedPreviewUrls.push(previewUrl);
+    renderGallery(photoDataset);
+    resultsSummary.textContent = `Showing ${photoDataset.length} photo${photoDataset.length === 1 ? "" : "s"} including your new upload.`;
 
-  uploadForm.reset();
-  clearPreview(false);
+    uploadForm.reset();
+    clearPreview(false);
+  } catch (error) {
+    setStatus(`Upload failed: ${error.message}`, "error");
+  }
 }
 
 function handleFileSelection() {
@@ -158,14 +207,135 @@ function handleFileSelection() {
   }
 
   setPreviewImage(selectedFile);
-  setStatus(`Preview loaded for "${selectedFile.name}".`, "info");
+  setStatus(`Preview loaded for \"${selectedFile.name}\".`, "info");
+}
+
+async function searchPhotosViaApi(query) {
+  const url = new URL(`${APP_CONFIG.apiBaseUrl}${APP_CONFIG.searchPath}`);
+  url.searchParams.set("q", query);
+
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: buildApiHeaders()
+  });
+
+  const payload = await readJsonSafely(response);
+  if (!response.ok) {
+    throw new Error(payload?.message || `HTTP ${response.status}`);
+  }
+
+  return normalizeApiResults(payload);
+}
+
+async function uploadPhotoViaApi(file, customLabels) {
+  const url = `${APP_CONFIG.apiBaseUrl}${APP_CONFIG.uploadPath}`;
+  const headers = buildApiHeaders({
+    "Content-Type": file.type || "application/octet-stream"
+  });
+
+  if (customLabels.length) {
+    headers["x-amz-meta-customLabels"] = customLabels.join(", ");
+  }
+
+  const response = await fetch(url, {
+    method: "PUT",
+    headers,
+    body: file
+  });
+
+  const payload = await readJsonSafely(response);
+  if (!response.ok) {
+    throw new Error(payload?.message || `HTTP ${response.status}`);
+  }
+
+  return payload;
+}
+
+function buildApiHeaders(extraHeaders = {}) {
+  const headers = { ...extraHeaders };
+
+  if (APP_CONFIG.apiKey.trim()) {
+    headers["x-api-key"] = APP_CONFIG.apiKey.trim();
+  }
+
+  return headers;
+}
+
+function normalizeApiResults(payload) {
+  const raw = Array.isArray(payload)
+    ? payload
+    : Array.isArray(payload?.results)
+      ? payload.results
+      : [];
+
+  return raw.map((item, index) => {
+    if (typeof item === "string") {
+      return {
+        objectKey: deriveObjectKey(item, index),
+        imageUrl: resolveImageReference(item),
+        labels: []
+      };
+    }
+
+    const url = item?.url || item?.imageUrl || item?.objectKey || "";
+    const labels = Array.isArray(item?.labels) ? item.labels.map((label) => String(label).toLowerCase()) : [];
+
+    return {
+      objectKey: item?.objectKey || deriveObjectKey(url, index),
+      imageUrl: resolveImageReference(url),
+      labels
+    };
+  }).filter((photo) => Boolean(photo.imageUrl));
+}
+
+function resolveImageReference(value) {
+  const ref = String(value || "").trim();
+  if (!ref) {
+    return "";
+  }
+
+  if (/^(https?:|data:|blob:|assets\/|\.\/assets\/)/i.test(ref)) {
+    return ref;
+  }
+
+  if (APP_CONFIG.s3PhotosBaseUrl.trim()) {
+    const base = APP_CONFIG.s3PhotosBaseUrl.replace(/\/$/, "");
+    const key = ref.replace(/^\//, "");
+    return `${base}/${key}`;
+  }
+
+  return ref;
+}
+
+function deriveObjectKey(value, fallbackIndex) {
+  const raw = String(value || "").trim();
+  if (!raw) {
+    return `result-${fallbackIndex + 1}.jpg`;
+  }
+
+  const withoutQuery = raw.split("?")[0];
+  const segments = withoutQuery.split("/").filter(Boolean);
+  return segments[segments.length - 1] || `result-${fallbackIndex + 1}.jpg`;
+}
+
+async function readJsonSafely(response) {
+  const text = await response.text();
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { message: text };
+  }
 }
 
 function searchMockPhotos(query, dataset) {
   const usefulKeywords = getUsefulKeywords(query);
   if (!usefulKeywords.length) {
     resultsSummary.textContent = "No useful search keywords were found.";
-    renderEmptyState("Try a more specific search, such as \"dogs\", \"beach\", or \"Sam\".");
+    renderEmptyState("Try a more specific search, such as \"dogs\", \"park\", or \"friends\".");
     return [];
   }
 
@@ -187,18 +357,19 @@ function photoMatchesKeywords(photo, keywords) {
   return keywords.some((keyword) => searchableText.includes(keyword));
 }
 
-function parseCustomLabels(rawValue) {
+function parseCustomLabels(rawValue, normalizeToLower) {
   return rawValue
     .split(",")
-    .map((label) => label.trim().toLowerCase())
-    .filter(Boolean);
+    .map((label) => label.trim())
+    .filter(Boolean)
+    .map((label) => normalizeToLower ? label.toLowerCase() : label);
 }
 
 function renderGallery(photos) {
   resultsGallery.innerHTML = "";
 
   if (!photos.length) {
-    renderEmptyState("No matching photos found. Try a different search or add a new photo.");
+    renderEmptyState("No matching photos found. Try a different search or upload a new photo.");
     return;
   }
 
@@ -206,9 +377,11 @@ function renderGallery(photos) {
     const card = document.createElement("article");
     card.className = "photo-card";
 
-    const labelsMarkup = photo.labels
+    const labelsMarkup = (photo.labels || [])
       .map((label) => `<span class="tag">${escapeHtml(label)}</span>`)
       .join("");
+
+    const labelsBlock = labelsMarkup || '<span class="tag">no-labels-returned</span>';
 
     card.innerHTML = `
       <div class="photo-frame">
@@ -221,7 +394,7 @@ function renderGallery(photos) {
         </div>
         <div>
           <span class="detail-label">Labels</span>
-          <div class="tag-list">${labelsMarkup}</div>
+          <div class="tag-list">${labelsBlock}</div>
         </div>
       </div>
     `;
@@ -293,7 +466,7 @@ function isImageFile(file) {
     return true;
   }
 
-  return /\.(png|jpe?g|gif|bmp|webp|svg)$/i.test(file.name);
+  return /\.(png|jpe?g|gif|bmp|webp|svg|avif)$/i.test(file.name);
 }
 
 function escapeHtml(value) {

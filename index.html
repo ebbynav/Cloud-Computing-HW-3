@@ -9,19 +9,19 @@
   <body>
     <div class="page-shell">
       <header class="hero">
-        <p class="eyebrow">Static Frontend Prototype</p>
+        <p class="eyebrow">Cloud Computing - Assignment 3</p>
         <h1>AI Photo Search</h1>
         <p class="subtitle">
-          Upload photos, add optional custom labels, and search your album using natural language.
+          Search photos using natural language and upload new photos with optional custom labels.
         </p>
       </header>
 
       <main class="layout">
         <section class="panel" aria-labelledby="search-title">
           <div class="section-heading">
-            <h2 id="search-title">Search Your Album</h2>
+            <h2 id="search-title">Search Photos</h2>
             <p>
-              This phase uses a local mock dataset only. Search phrases are matched against filenames and labels in the browser.
+              Enter natural language text to query photos by labels and keywords.
             </p>
           </div>
 
@@ -31,7 +31,7 @@
               <input
                 id="search-input"
                 type="text"
-                placeholder="show me dogs or show me Sam at the beach"
+                placeholder="show me dogs in the park"
                 autocomplete="off"
               >
               <button id="search-button" type="submit">Search</button>
@@ -42,9 +42,10 @@
         <section class="panel panel-split" aria-labelledby="upload-title">
           <div>
             <div class="section-heading">
-              <h2 id="upload-title">Prepare a Photo Upload</h2>
+              <h2 id="upload-title">Upload Photo</h2>
               <p>
-                Choose an image, add optional custom labels, and preview how it will appear before real S3 integration is added later.
+                Choose an image and optionally add comma-separated custom labels. These labels are sent in
+                <code>x-amz-meta-customLabels</code> during upload.
               </p>
             </div>
 
@@ -59,7 +60,7 @@
                 <input
                   id="labels-input"
                   type="text"
-                  placeholder="Sam, Sally, beach"
+                  placeholder="Sam, Sally"
                   autocomplete="off"
                 >
               </div>
@@ -74,7 +75,7 @@
               <p class="placeholder-text">Choose an image to preview it here.</p>
             </div>
             <p class="preview-note">
-              Demo uploads stay in browser memory only and are lost when the page is refreshed.
+              Preview is local in your browser. Upload behavior depends on your API configuration in <code>app.js</code>.
             </p>
           </aside>
         </section>
@@ -85,7 +86,7 @@
             <p>Search and upload messages appear here.</p>
           </div>
           <div id="status-message" class="status-message status-info" role="status" aria-live="polite">
-            Sample photos are loaded. Search the album or prepare a new image upload.
+            Initializing application...
           </div>
         </section>
 
@@ -95,7 +96,7 @@
               <h2 id="results-title">Results Gallery</h2>
               <p>Matching photos are shown below.</p>
             </div>
-            <div id="results-summary" class="results-summary">Showing 6 sample photos.</div>
+            <div id="results-summary" class="results-summary">Showing sample photos.</div>
           </div>
 
           <div id="results-gallery" class="gallery" aria-live="polite"></div>
