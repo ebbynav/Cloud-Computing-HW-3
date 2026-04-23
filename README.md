@@ -21,11 +21,12 @@ Edit `APP_CONFIG` in `app.js`:
 
 - `apiBaseUrl`: API Gateway invoke URL (leave empty for static mode)
 - `apiKey`: API key if required
-- `searchPath`: usually `/search`
-- `uploadPath`: assignment PDF says `/photos`; older swagger uses `/upload`
+- `searchPath`: `/search`
+- `uploadPath`: `/photos` by default; `/upload` is also supported for the older Swagger contract
 - `s3PhotosBaseUrl`: optional S3 bucket URL to resolve keys returned by search
 - The upload request sends custom labels using the `x-amz-meta-customLabels` metadata header.
 - `template.yaml` outputs the frontend website URL and API invoke URL for deployment wiring.
+- The API stage defaults to `v1` so it lines up with the Swagger base path.
 - `backend/` contains the Lambda source for indexing and search.
 
 ## Required Upload Files (frontend S3 bucket)

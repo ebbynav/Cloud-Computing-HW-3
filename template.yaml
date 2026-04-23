@@ -4,7 +4,7 @@ Description: Basic CloudFormation stack for the AI Photo Search assignment.
 Parameters:
   ApiStageName:
     Type: String
-    Default: prod
+    Default: v1
     Description: API Gateway deployment stage name.
 
   ApiKeyValue:
@@ -12,6 +12,36 @@ Parameters:
     Default: eeh3F5fpkTNWGv4HEkm66oyD8Ws47VT3aCTDgwr9
     NoEcho: true
     Description: API key value used by the frontend and API Gateway usage plan.
+
+  OpenSearchEndpoint:
+    Type: String
+    Default: ""
+    Description: OpenSearch domain endpoint, including https://.
+
+  OpenSearchIndex:
+    Type: String
+    Default: photos
+    Description: OpenSearch index name used for photo documents.
+
+  OpenSearchBasePath:
+    Type: String
+    Default: ""
+    Description: Optional base path if OpenSearch is fronted by a reverse proxy.
+
+  LexBotId:
+    Type: String
+    Default: ""
+    Description: Lex V2 bot ID used by search-photos.
+
+  LexBotAliasId:
+    Type: String
+    Default: ""
+    Description: Lex V2 bot alias ID used by search-photos.
+
+  LexLocaleId:
+    Type: String
+    Default: en_US
+    Description: Lex locale ID used by search-photos.
 
 Resources:
   FrontendBucket:
@@ -98,6 +128,7 @@ Resources:
                   - lex:PostText
                   - lex:RecognizeText
                   - es:ESHttpGet
+                  - es:ESHttpPost
                 Resource: '*'
 
   IndexPhotosFunction:
@@ -110,7 +141,9 @@ Resources:
       Timeout: 10
       Environment:
         Variables:
-          PHOTOS_BUCKET: !Ref PhotosBucket
+          OPENSEARCH_ENDPOINT: !Ref OpenSearchEndpoint
+          OPENSEARCH_INDEX: !Ref OpenSearchIndex
+          OPENSEARCH_BASE_PATH: !Ref OpenSearchBasePath
       Code:
         ZipFile: |
           "use strict";
@@ -214,6 +247,14 @@ Resources:
       Handler: index.handler
       Role: !GetAtt SearchPhotosRole.Arn
       Timeout: 10
+      Environment:
+        Variables:
+          OPENSEARCH_ENDPOINT: !Ref OpenSearchEndpoint
+          OPENSEARCH_INDEX: !Ref OpenSearchIndex
+          OPENSEARCH_BASE_PATH: !Ref OpenSearchBasePath
+          LEX_BOT_ID: !Ref LexBotId
+          LEX_BOT_ALIAS_ID: !Ref LexBotAliasId
+          LEX_LOCALE_ID: !Ref LexLocaleId
       Code:
         ZipFile: |
           "use strict";
@@ -370,6 +411,7 @@ Resources:
           - REGIONAL
       BinaryMediaTypes:
         - image/jpeg
+        - image/jpg
         - image/png
         - image/webp
         - image/gif
@@ -389,11 +431,25 @@ Resources:
       ParentId: !GetAtt PhotoSearchApi.RootResourceId
       PathPart: photos
 
+  UploadResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PhotoSearchApi
+      ParentId: !GetAtt PhotoSearchApi.RootResourceId
+      PathPart: upload
+
   PhotosObjectResource:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId: !Ref PhotoSearchApi
       ParentId: !Ref PhotosResource
+      PathPart: '{object}'
+
+  UploadObjectResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PhotoSearchApi
+      ParentId: !Ref UploadResource
       PathPart: '{object}'
 
   SearchOptionsMethod:
@@ -461,11 +517,72 @@ Resources:
             method.response.header.Access-Control-Allow-Methods: true
             method.response.header.Access-Control-Allow-Origin: true
 
+  UploadOptionsMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref PhotoSearchApi
+      ResourceId: !Ref UploadObjectResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Api-Key,x-amz-meta-customLabels'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,PUT'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+
   PhotosPutMethod:
     Type: AWS::ApiGateway::Method
     Properties:
       RestApiId: !Ref PhotoSearchApi
       ResourceId: !Ref PhotosObjectResource
+      HttpMethod: PUT
+      AuthorizationType: NONE
+      ApiKeyRequired: true
+      RequestParameters:
+        method.request.path.object: true
+        method.request.header.Content-Type: false
+        method.request.header.x-amz-meta-customLabels: false
+      Integration:
+        Type: AWS
+        IntegrationHttpMethod: PUT
+        ContentHandling: CONVERT_TO_BINARY
+        Credentials: !GetAtt ApiGatewayS3Role.Arn
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:s3:path/${PhotosBucket}/{object}
+        RequestParameters:
+          integration.request.path.object: method.request.path.object
+          integration.request.header.Content-Type: method.request.header.Content-Type
+          integration.request.header.x-amz-meta-customLabels: method.request.header.x-amz-meta-customLabels
+        PassthroughBehavior: WHEN_NO_MATCH
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Api-Key,x-amz-meta-customLabels'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,PUT'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+
+  UploadPutMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref PhotoSearchApi
+      ResourceId: !Ref UploadObjectResource
       HttpMethod: PUT
       AuthorizationType: NONE
       ApiKeyRequired: true
@@ -547,6 +664,8 @@ Resources:
       - SearchGetMethod
       - PhotosOptionsMethod
       - PhotosPutMethod
+      - UploadOptionsMethod
+      - UploadPutMethod
     Properties:
       RestApiId: !Ref PhotoSearchApi
       StageName: !Ref ApiStageName
