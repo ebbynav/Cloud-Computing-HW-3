@@ -4,11 +4,11 @@
 */
 
 const APP_CONFIG = {
-  apiBaseUrl: "",
-  apiKey: "",
+  apiBaseUrl: "https://oak67t1655.execute-api.us-east-1.amazonaws.com/prod",
+  apiKey: "IGJnrbsgLY5hLb8BxMjHQuwH9Zq8xmz83P5HaMai",
   searchPath: "/search",
   uploadPath: "/photos",
-  s3PhotosBaseUrl: ""
+  s3PhotosBaseUrl: "https://cc-hw3-bucket2.s3.amazonaws.com"
 };
 
 const IGNORED_SEARCH_WORDS = new Set([
