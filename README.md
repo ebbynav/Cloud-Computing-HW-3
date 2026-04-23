@@ -4,20 +4,16 @@ Frontend for AI Photo Search with:
 - natural-language search UI (`GET /search`)
 - photo upload UI with custom labels header (`PUT /photos` by default)
 - static fallback mode for local preview/testing
+- starter CloudFormation stack (`template.yaml`) for the assignment infrastructure
 
 ## Repository Contents
 
 - `index.html`
 - `styles.css`
 - `app.js`
-- `assets/vehicles.jpg`
-- `assets/menu.jpg`
-- `assets/people.jpg`
-- `assets/trees.jpg`
-- `assets/cats.jpg`
-- `assets/dogs.jpg`
-- `assets/dog-park.jpg`
-- `assets/nyc-park.jpg`
+- `backend/`
+- `template.yaml`
+- `assets/`
 
 ## Configure API Integration
 
@@ -28,10 +24,13 @@ Edit `APP_CONFIG` in `app.js`:
 - `searchPath`: usually `/search`
 - `uploadPath`: assignment PDF says `/photos`; older swagger uses `/upload`
 - `s3PhotosBaseUrl`: optional S3 bucket URL to resolve keys returned by search
+- The upload request sends custom labels using the `x-amz-meta-customLabels` metadata header.
+- `template.yaml` outputs the frontend website URL and API invoke URL for deployment wiring.
+- `backend/` contains the Lambda source for indexing and search.
 
 ## Required Upload Files (frontend S3 bucket)
 
-Upload all repo files, including the `assets/` folder.
+Upload all repo files, including the `assets/` folder and `template.yaml`.
 
 ## Run Locally
 

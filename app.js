@@ -62,34 +62,35 @@ setStatus(
 
 function createSeedPhotoDataset() {
   return [
-    { objectKey: "vehicles.jpg", imageUrl: "assets/vehicles.jpg", labels: ["vehicle", "car", "truck", "bus", "motorcycle"] },
-    { objectKey: "menu.jpg", imageUrl: "assets/menu.jpg", labels: ["food", "meal", "restaurant", "menu", "dining"] },
-    { objectKey: "people.jpg", imageUrl: "assets/people.jpg", labels: ["people", "friends", "group", "smile", "outdoor"] },
-    { objectKey: "trees.jpg", imageUrl: "assets/trees.jpg", labels: ["trees", "forest", "nature", "park", "outdoor"] },
+    { objectKey: "vehicles.jpg", imageUrl: "assets/vehicles.jpg", labels: ["vehicle", "vehicles", "car", "truck", "bus"] },
+    { objectKey: "menu.jpg", imageUrl: "assets/menu.jpg", labels: ["menu", "restaurant", "food", "dining", "meal"] },
+    { objectKey: "people.jpg", imageUrl: "assets/people.jpg", labels: ["people", "person", "group", "friends", "outdoor"] },
+    { objectKey: "trees.jpg", imageUrl: "assets/trees.jpg", labels: ["trees", "tree", "forest", "nature", "park"] },
     { objectKey: "cats.jpg", imageUrl: "assets/cats.jpg", labels: ["cat", "cats", "kitten", "pets", "animals"] },
-    { objectKey: "dogs.jpg", imageUrl: "assets/dogs.jpg", labels: ["dog", "dogs", "pet", "animals", "breeds"] },
+    { objectKey: "dogs.jpg", imageUrl: "assets/dogs.jpg", labels: ["dog", "dogs", "puppy", "pets", "animals"] },
     { objectKey: "dog-park.jpg", imageUrl: "assets/dog-park.jpg", labels: ["dog", "dogs", "park", "grass", "outdoor"] },
     { objectKey: "nyc-park.jpg", imageUrl: "assets/nyc-park.jpg", labels: ["park", "nyc", "city", "people", "lawn"] },
-    { objectKey: "beach-1.jpg", imageUrl: "assets/beach-1.jpg", labels: ["beach", "shore", "ocean", "sky", "outdoor"] },
-    { objectKey: "beach-2.jpg", imageUrl: "assets/beach-2.jpg", labels: ["beach", "sand", "water", "sky", "outdoor"] },
-    { objectKey: "sunset-1.jpg", imageUrl: "assets/sunset-1.jpg", labels: ["sunset", "sky", "sun", "landscape", "outdoor"] },
-    { objectKey: "sunset-2.jpg", imageUrl: "assets/sunset-2.jpg", labels: ["sunset", "evening", "sky", "horizon", "outdoor"] },
+    { objectKey: "beach-1.jpg", imageUrl: "assets/beach-1.jpg", labels: ["beach", "ocean", "sand", "shore", "outdoor"] },
+    { objectKey: "beach-2.jpg", imageUrl: "assets/beach-2.jpg", labels: ["beach", "water", "sky", "shore", "outdoor"] },
+    { objectKey: "sunset-1.jpg", imageUrl: "assets/sunset-1.jpg", labels: ["sunset", "sky", "sun", "horizon", "outdoor"] },
+    { objectKey: "sunset-2.jpg", imageUrl: "assets/sunset-2.jpg", labels: ["sunset", "evening", "sky", "clouds", "outdoor"] },
     { objectKey: "mountain-1.jpg", imageUrl: "assets/mountain-1.jpg", labels: ["mountain", "peak", "nature", "landscape", "outdoor"] },
-    { objectKey: "mountain-2.jpg", imageUrl: "assets/mountain-2.jpg", labels: ["mountain", "hill", "sky", "nature", "outdoor"] },
     { objectKey: "lake-1.jpg", imageUrl: "assets/lake-1.jpg", labels: ["lake", "water", "reflection", "nature", "outdoor"] },
-    { objectKey: "lake-2.jpg", imageUrl: "assets/lake-2.jpg", labels: ["lake", "shore", "water", "trees", "outdoor"] },
-    { objectKey: "city-street-1.jpg", imageUrl: "assets/city-street-1.jpg", labels: ["city", "street", "road", "buildings", "urban"] },
+    { objectKey: "lake-2.jpg", imageUrl: "assets/lake-2.jpg", labels: ["lake", "shore", "trees", "water", "outdoor"] },
     { objectKey: "city-street-2.jpg", imageUrl: "assets/city-street-2.jpg", labels: ["city", "street", "road", "traffic", "urban"] },
     { objectKey: "laptop-desk-1.jpg", imageUrl: "assets/laptop-desk-1.jpg", labels: ["laptop", "desk", "workspace", "computer", "office"] },
     { objectKey: "laptop-desk-2.jpg", imageUrl: "assets/laptop-desk-2.jpg", labels: ["laptop", "desk", "keyboard", "workspace", "office"] },
-    { objectKey: "phone-1.jpg", imageUrl: "assets/phone-1.jpg", labels: ["phone", "smartphone", "screen", "device", "table"] },
-    { objectKey: "phone-2.jpg", imageUrl: "assets/phone-2.jpg", labels: ["phone", "mobile", "smartphone", "device", "desk"] },
-    { objectKey: "pizza-1.jpg", imageUrl: "assets/pizza-1.jpg", labels: ["pizza", "food", "meal", "cheese", "dining"] },
-    { objectKey: "pizza-2.jpg", imageUrl: "assets/pizza-2.jpg", labels: ["pizza", "food", "slice", "meal", "dining"] },
-    { objectKey: "coffee-1.jpg", imageUrl: "assets/coffee-1.jpg", labels: ["coffee", "cup", "drink", "table", "beverage"] },
-    { objectKey: "coffee-2.jpg", imageUrl: "assets/coffee-2.jpg", labels: ["coffee", "mug", "drink", "cafe", "beverage"] },
+    { objectKey: "phone-1.jpg", imageUrl: "assets/phone-1.jpg", labels: ["phone", "smartphone", "device", "screen", "table"] },
+    { objectKey: "bicycle-2.jpg", imageUrl: "assets/bicycle-2.jpg", labels: ["bicycle", "bike", "transport", "road", "outdoor"] },
+    { objectKey: "bottle-1.jpg", imageUrl: "assets/bottle-1.jpg", labels: ["bottle", "drink", "beverage", "table", "glass"] },
+    { objectKey: "bottle-2.jpg", imageUrl: "assets/bottle-2.jpg", labels: ["bottle", "water", "drink", "beverage", "table"] },
+    { objectKey: "car-1.jpg", imageUrl: "assets/car-1.jpg", labels: ["car", "vehicle", "road", "transport", "outdoor"] },
+    { objectKey: "car-2.jpg", imageUrl: "assets/car-2.jpg", labels: ["car", "vehicle", "parking", "road", "transport"] },
     { objectKey: "burger-1.jpg", imageUrl: "assets/burger-1.jpg", labels: ["burger", "food", "meal", "sandwich", "dining"] },
-    { objectKey: "burger-2.jpg", imageUrl: "assets/burger-2.jpg", labels: ["burger", "food", "meal", "fries", "dining"] }
+    { objectKey: "burger-2.jpg", imageUrl: "assets/burger-2.jpg", labels: ["burger", "fries", "food", "meal", "dining"] },
+    { objectKey: "coffee-1.jpg", imageUrl: "assets/coffee-1.jpg", labels: ["coffee", "cup", "drink", "table", "beverage"] },
+    { objectKey: "coffee-2.jpg", imageUrl: "assets/coffee-2.jpg", labels: ["coffee", "mug", "cafe", "drink", "beverage"] },
+    { objectKey: "duck.jpg", imageUrl: "assets/duck.jpg", labels: ["duck", "bird", "water", "lake", "wildlife"] }
   ];
 }
 
@@ -233,7 +234,7 @@ async function uploadPhotoViaApi(file, customLabels) {
   });
 
   if (customLabels.length) {
-    headers["x-amz-meta-customlabels"] = customLabels.join(", ");
+    headers["x-amz-meta-customLabels"] = customLabels.join(", ");
   }
 
   const response = await fetch(url, {

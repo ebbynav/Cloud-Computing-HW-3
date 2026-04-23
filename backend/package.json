@@ -1,0 +1,14 @@
+{
+  "name": "cloud-computing-hw3-backend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Lambda source for the AI photo search assignment",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "lint": "node --check backend/index-photos.js && node --check backend/search-photos.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1692.0"
+  }
+}
