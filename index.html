@@ -1,109 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Photo Search</title>
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <div class="page-shell">
-      <header class="hero">
-        <p class="eyebrow">Cloud Computing - Assignment 3</p>
-        <h1>AI Photo Search</h1>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Photo Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Cloud Computing &middot; Assignment 3</p>
+        <h1>AI Photo <em>Search</em></h1>
         <p class="subtitle">
-          Search photos using natural language and upload new photos with optional custom labels.
+          Search your photo library using natural language, then upload fresh images with optional labels that flow
+          straight into your S3-powered pipeline.
         </p>
-      </header>
+        <div class="hero-chips" aria-label="Application highlights">
+          <span class="hero-chip">Natural language search</span>
+          <span class="hero-chip">S3 uploads</span>
+          <span class="hero-chip">Rekognition labels</span>
+        </div>
+      </div>
 
-      <main class="layout">
-        <section class="panel" aria-labelledby="search-title">
-          <div class="section-heading">
-            <h2 id="search-title">Search Photos</h2>
-            <p>
-              Enter natural language text to query photos by labels and keywords.
-            </p>
+      <aside class="hero-card" aria-label="Workflow overview">
+        <p class="hero-card-label">Workflow</p>
+        <div class="hero-card-grid">
+          <div class="hero-stat">
+            <span class="hero-stat-value">01</span>
+            <span class="hero-stat-label">Search by phrase</span>
           </div>
+          <div class="hero-stat">
+            <span class="hero-stat-value">02</span>
+            <span class="hero-stat-label">Preview the image</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-value">03</span>
+            <span class="hero-stat-label">Upload to S3</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-value">04</span>
+            <span class="hero-stat-label">Review the gallery</span>
+          </div>
+        </div>
+      </aside>
+    </header>
 
-          <form id="search-form" class="form-block">
-            <label class="field-label" for="search-input">Search query</label>
-            <div class="search-row">
-              <input
-                id="search-input"
-                type="text"
-                placeholder="show me dogs in the park"
-                autocomplete="off"
-              >
-              <button id="search-button" type="submit">Search</button>
-            </div>
-          </form>
-        </section>
-
-        <section class="panel panel-split" aria-labelledby="upload-title">
+    <main class="layout">
+      <section class="panel panel-search" aria-labelledby="search-title">
+        <div class="section-heading">
+          <div class="section-number">01</div>
           <div>
-            <div class="section-heading">
+            <h2 id="search-title">Search Photos</h2>
+            <p>Use natural language to describe the photos you want to find.</p>
+          </div>
+        </div>
+
+        <form id="search-form" class="form-block">
+          <label class="field-label" for="search-input">Search query</label>
+          <div class="search-row">
+            <input id="search-input" type="text" placeholder='e.g. "show me dogs in the park"' autocomplete="off">
+            <button id="search-button" type="submit">
+              <span>Search</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel panel-split" aria-labelledby="upload-title">
+        <div>
+          <div class="section-heading">
+            <div class="section-number">02</div>
+            <div>
               <h2 id="upload-title">Upload Photo</h2>
               <p>
-                Choose an image and optionally add comma-separated custom labels. These labels are sent in
-                <code>x-amz-meta-customLabels</code> during upload.
+                Choose an image and optionally add comma-separated labels. Custom values are sent through
+                <code>x-amz-meta-customlabels</code>.
               </p>
             </div>
-
-            <form id="upload-form" class="form-block">
-              <div class="field-group">
-                <label class="field-label" for="photo-input">Image file</label>
-                <input id="photo-input" type="file" accept="image/*">
-              </div>
-
-              <div class="field-group">
-                <label class="field-label" for="labels-input">Optional custom labels</label>
-                <input
-                  id="labels-input"
-                  type="text"
-                  placeholder="Sam, Sally"
-                  autocomplete="off"
-                >
-              </div>
-
-              <button id="upload-button" type="submit">Upload</button>
-            </form>
           </div>
 
-          <aside class="preview-panel" aria-labelledby="preview-title">
-            <h3 id="preview-title">Selected Photo Preview</h3>
-            <div id="preview-box" class="preview-box">
-              <p class="placeholder-text">Choose an image to preview it here.</p>
+          <form id="upload-form" class="form-block">
+            <div class="field-group">
+              <label class="field-label" for="photo-input">Image file</label>
+              <input id="photo-input" type="file" accept="image/*">
             </div>
-            <p class="preview-note">
-              Preview is local in your browser. Upload behavior depends on your API configuration in <code>app.js</code>.
-            </p>
-          </aside>
-        </section>
 
-        <section class="panel" aria-labelledby="status-title">
-          <div class="section-heading">
+            <div class="field-group">
+              <label class="field-label" for="labels-input">Custom labels <span
+                  class="field-optional">(optional)</span></label>
+              <input id="labels-input" type="text" placeholder="sam, sally, birthday" autocomplete="off">
+            </div>
+
+            <button id="upload-button" type="submit">
+              <span>Upload Photo</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+            </button>
+          </form>
+        </div>
+
+        <aside class="preview-panel" aria-labelledby="preview-title">
+          <div class="preview-panel-header">
+            <h3 id="preview-title">Preview</h3>
+            <span class="preview-badge">Local view</span>
+          </div>
+          <div id="preview-box" class="preview-box">
+            <div class="preview-placeholder">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              <p>Choose an image to preview it here before upload.</p>
+            </div>
+          </div>
+          <p class="preview-note">Preview stays in the browser. Upload sends the selected file to your API Gateway and S3 flow.</p>
+        </aside>
+      </section>
+
+      <section class="panel" aria-labelledby="status-title">
+        <div class="section-heading">
+          <div class="section-number">03</div>
+          <div>
             <h2 id="status-title">Status</h2>
-            <p>Search and upload messages appear here.</p>
+            <p>Search and upload messages appear here in real time.</p>
           </div>
-          <div id="status-message" class="status-message status-info" role="status" aria-live="polite">
-            Initializing application...
-          </div>
-        </section>
+        </div>
 
-        <section class="panel" aria-labelledby="results-title">
-          <div class="section-heading section-heading-row">
+        <div id="status-message" class="status-message status-info" role="status" aria-live="polite">
+          Initializing application...
+        </div>
+      </section>
+
+      <section class="panel panel-results" aria-labelledby="results-title">
+        <div class="section-heading section-heading-row">
+          <div class="section-heading">
+            <div class="section-number">04</div>
             <div>
               <h2 id="results-title">Results Gallery</h2>
-              <p>Matching photos are shown below.</p>
+              <p>Matching photos are rendered below as cards with filenames and detected labels.</p>
             </div>
-            <div id="results-summary" class="results-summary">Showing sample photos.</div>
           </div>
+          <div id="results-summary" class="results-summary">Showing sample photos.</div>
+        </div>
 
-          <div id="results-gallery" class="gallery" aria-live="polite"></div>
-        </section>
-      </main>
-    </div>
+        <div id="results-gallery" class="gallery" aria-live="polite"></div>
+      </section>
+    </main>
 
-    <script src="app.js"></script>
-  </body>
+    <footer class="site-footer">
+      <p>AI Photo Search &middot; Cloud Computing Assignment 3 &middot; Spring 2026</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
 </html>
