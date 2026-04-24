@@ -2,13 +2,12 @@
   color-scheme: light;
   --bg-top: #f6efe3;
   --bg-bottom: #dfe8f2;
-  --surface: rgba(255, 251, 247, 0.82);
+  --surface: rgba(255, 251, 247, 0.84);
   --surface-strong: #fffdfa;
   --surface-deep: #17334a;
   --text: #13212d;
   --muted: #5f6d7b;
   --border: rgba(19, 33, 45, 0.1);
-  --border-strong: rgba(19, 33, 45, 0.18);
   --accent: #0f766e;
   --accent-strong: #0b5e58;
   --accent-soft: rgba(15, 118, 110, 0.1);
@@ -47,7 +46,6 @@ body {
     radial-gradient(circle at top left, rgba(201, 109, 66, 0.18), transparent 26%),
     radial-gradient(circle at right 10% top 20%, rgba(15, 118, 110, 0.12), transparent 24%),
     linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-  position: relative;
   overflow-x: hidden;
 }
 
@@ -100,7 +98,6 @@ button {
   padding: 0.95rem 1.4rem;
   font-size: 0.98rem;
   font-weight: 700;
-  letter-spacing: 0.01em;
   cursor: pointer;
   box-shadow: 0 14px 24px rgba(15, 118, 110, 0.24);
   transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
@@ -118,19 +115,14 @@ button.is-busy {
   transform: none;
 }
 
-button svg {
-  flex: 0 0 auto;
-}
-
 input {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.82);
   padding: 0.95rem 1rem;
   color: var(--text);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 input::placeholder {
@@ -176,6 +168,11 @@ code {
   background: var(--surface);
   backdrop-filter: blur(16px);
   box-shadow: var(--shadow-lg);
+}
+
+.hero-copy,
+.panel {
+  padding: 1.5rem;
 }
 
 .hero-copy {
@@ -299,10 +296,6 @@ code {
   gap: 1.2rem;
 }
 
-.panel {
-  padding: 1.5rem;
-}
-
 .panel-search {
   background:
     linear-gradient(140deg, rgba(255, 255, 255, 0.72), rgba(247, 251, 255, 0.88)),
@@ -396,8 +389,7 @@ code {
   border: 1px solid rgba(19, 33, 45, 0.08);
   border-radius: var(--radius-lg);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(245, 250, 253, 0.95));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(245, 250, 253, 0.96));
 }
 
 .preview-panel-header {
@@ -445,10 +437,6 @@ code {
   padding: 1.5rem;
   text-align: center;
   color: var(--muted);
-}
-
-.preview-placeholder svg {
-  color: rgba(19, 33, 45, 0.48);
 }
 
 .preview-placeholder p {
@@ -521,6 +509,7 @@ code {
 }
 
 .photo-frame {
+  position: relative;
   aspect-ratio: 4 / 3;
   background:
     linear-gradient(140deg, rgba(15, 118, 110, 0.08), rgba(201, 109, 66, 0.1)),
@@ -531,6 +520,16 @@ code {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.image-fallback {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 1rem;
+  color: var(--muted);
+  text-align: center;
+  font-weight: 700;
 }
 
 .photo-details {
@@ -607,6 +606,7 @@ code {
 }
 
 @media (max-width: 920px) {
+
   .hero,
   .panel-split {
     grid-template-columns: 1fr;
