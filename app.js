@@ -8,11 +8,11 @@
 */
 
 const APP_CONFIG = {
-  apiBaseUrl: "https://oak67t1655.execute-api.us-east-1.amazonaws.com/prod",
+  apiBaseUrl: "https://1v6dwo8rg2.execute-api.us-east-1.amazonaws.com/prod",
   apiKey: "hw3PhotoSearchKey2026abcd1234",
   searchPath: "/search",
   uploadPath: "/photos",
-  s3PhotosBaseUrl: "https://cc-hw3-bucket2.s3.amazonaws.com"
+  s3PhotosBaseUrl: "https://255982107374-cchw3-photos.s3.amazonaws.com"
 };
 
 const PREVIEW_PLACEHOLDER_MARKUP = `
