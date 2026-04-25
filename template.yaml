@@ -134,7 +134,7 @@ Resources:
   IndexPhotosFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: index-photos
+      FunctionName: !Sub ${AWS::StackName}-index-photos
       Runtime: nodejs20.x
       Handler: index.handler
       Role: !GetAtt IndexPhotosRole.Arn
@@ -242,7 +242,7 @@ Resources:
   SearchPhotosFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: search-photos
+      FunctionName: !Sub ${AWS::StackName}-search-photos
       Runtime: nodejs20.x
       Handler: index.handler
       Role: !GetAtt SearchPhotosRole.Arn
@@ -682,6 +682,14 @@ Outputs:
   PhotosBucketName:
     Description: Name of the photo storage bucket.
     Value: !Ref PhotosBucket
+
+  IndexPhotosFunctionName:
+    Description: Name of the index photos Lambda function.
+    Value: !Ref IndexPhotosFunction
+
+  SearchPhotosFunctionName:
+    Description: Name of the search photos Lambda function.
+    Value: !Ref SearchPhotosFunction
 
   ApiInvokeURL:
     Description: Base invoke URL for the API Gateway stage.
