@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - cd backend
+      - npm ci || npm install
+      - cd ..
+  build:
+    commands:
+      - rm -rf dist-search
+      - mkdir -p dist-search
+      - cp backend/search-photos.js dist-search/index.js
+      - cp backend/shared.js dist-search/shared.js
+      - cp -R backend/node_modules dist-search/node_modules
+
+artifacts:
+  base-directory: dist-search
+  files:
+    - '**/*'

@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - rm -rf dist-frontend
+      - mkdir -p dist-frontend
+      - cp index.html app.js styles.css template.yaml dist-frontend/
+      - cp -R assets dist-frontend/assets
+
+artifacts:
+  base-directory: dist-frontend
+  files:
+    - '**/*'
