@@ -8,7 +8,7 @@
 */
 
 const APP_CONFIG = {
-  apiBaseUrl: "https://1v6dwo8rg2.execute-api.us-east-1.amazonaws.com/prod",
+  apiBaseUrl: "https://oak67t1655.execute-api.us-east-1.amazonaws.com/prod",
   apiKey: "hw3PhotoSearchKey2026abcd1234",
   searchPath: "/search",
   uploadPath: "/photos",
