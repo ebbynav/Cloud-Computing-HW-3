@@ -3,12 +3,11 @@ version: 0.2
 phases:
   build:
     commands:
-      - rm -rf dist-frontend
-      - mkdir -p dist-frontend
-      - cp index.html app.js styles.css template.yaml dist-frontend/
-      - cp -R assets dist-frontend/assets
+      - aws s3 sync . s3://cc-hw3-bucket1 --exclude "buildspec*" --exclude ".git/*" --exclude "README.md" --delete
+      - aws s3 cp index.html s3://cc-hw3-bucket1/index.html --content-type "text/html"
+      - aws s3 cp app.js s3://cc-hw3-bucket1/app.js --content-type "application/javascript"
+      - aws s3 cp styles.css s3://cc-hw3-bucket1/styles.css --content-type "text/css"
 
 artifacts:
-  base-directory: dist-frontend
   files:
     - '**/*'
