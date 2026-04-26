@@ -16,6 +16,8 @@ pnpm-debug.log*
 # Environment files
 .env
 .env.*
+.venv/
+venv/
 
 # OS files
 .DS_Store
